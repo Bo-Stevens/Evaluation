@@ -9,6 +9,10 @@ public class CubeSpawningComponent : MonoBehaviour
     [SerializeField] TeleporterController teleporterCubePrefab;
     Camera playerCam;
     Vector3 spawnPosition;
+    int cubeCount;
+
+    public delegate void CubeSpawned(int cubeCount);
+    public event CubeSpawned OnCubeSpawned;
 
     // Start is called before the first frame update
     void Start()
@@ -34,6 +38,8 @@ public class CubeSpawningComponent : MonoBehaviour
     {
         TeleporterController teleporter = Instantiate(teleporterCubePrefab.gameObject, spawnPosition, Quaternion.identity).GetComponent<TeleporterController>();
         teleporter.transform.position += new Vector3(0, teleporter.TeleporterMesh.bounds.size.y / 2f, 0);
+        cubeCount += 1;
+        if(OnCubeSpawned != null) OnCubeSpawned.Invoke(cubeCount);
     }
 
     // Update is called once per frame

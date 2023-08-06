@@ -7,15 +7,26 @@ using UnityEngine;
 public class PlayerMovementComponent : SimulationBehaviour
 {
     [HideInInspector] public ControlScheme ActiveControlScheme;
-    CharacterController characterContoller;
+    [HideInInspector] public PlayerUIController PlayerUI;
+    [HideInInspector] public CameraController CameraController;
+    [HideInInspector] public CubeSpawningComponent CubeSpawner;
     [SerializeField] float movementSpeed;
-
+    
+    CharacterController characterContoller;
+    
 
     private void Awake()
     {
         ActiveControlScheme = new ControlScheme();
         ActiveControlScheme.CameraMovement.Enable();
         characterContoller = GetComponent<CharacterController>();
+    }
+    private void Start()
+    {
+        CameraController.Follow = transform;
+        CameraController.Player = this;
+        CubeSpawner = CameraController.gameObject.GetComponent<CubeSpawningComponent>();
+        CubeSpawner.OnCubeSpawned += OnCubeSpawned;
     }
     public override void FixedUpdateNetwork()
     {
@@ -27,6 +38,11 @@ public class PlayerMovementComponent : SimulationBehaviour
         {
             gameObject.transform.forward = move;
         }
+    }
+
+    public void OnCubeSpawned(int cubeCount)
+    {
+        PlayerUI.SetPlacementCountString(cubeCount + "");
     }
 
 }

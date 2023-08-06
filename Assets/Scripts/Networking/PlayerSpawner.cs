@@ -6,15 +6,19 @@ using UnityEngine;
 public class PlayerSpawner : SimulationBehaviour, IPlayerJoined
 {
     [SerializeField] GameObject playerPrefab;
-    [SerializeField] GameObject playerCameraPrefab;
+    [SerializeField] CameraController playerCameraPrefab;
+    [SerializeField] PlayerUIController playerUI;
     public void PlayerJoined(PlayerRef player)
     {
         if(player == Runner.LocalPlayer)
         {
             NetworkObject playerInstance = Runner.Spawn(playerPrefab, Vector3.zero, Quaternion.identity, player);
-            GameObject cameraInstance = Instantiate(playerCameraPrefab);
-            cameraInstance.GetComponent<CameraController>().Follow = playerInstance.transform;
-            cameraInstance.GetComponent<CameraController>().Player = playerInstance.GetComponent<PlayerMovementComponent>();
+            CameraController cameraInstance = Instantiate(playerCameraPrefab.gameObject).GetComponent<CameraController>();
+            PlayerUIController ui = Instantiate(playerUI.gameObject).GetComponent<PlayerUIController>();
+            playerInstance.GetBehaviour<PlayerMovementComponent>().CameraController = cameraInstance;
+            cameraInstance.Follow = playerInstance.transform;
+            cameraInstance.Player = playerInstance.GetComponent<PlayerMovementComponent>();
+            playerInstance.GetComponent<PlayerMovementComponent>().PlayerUI = ui;
         }
     }
 }
