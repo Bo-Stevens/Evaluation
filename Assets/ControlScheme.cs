@@ -55,9 +55,18 @@ public partial class @ControlScheme : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""SwivelCamera"",
+                    ""name"": ""MovedMouse"",
                     ""type"": ""Value"",
                     ""id"": ""7c5ebca6-53e5-4543-8575-4629ea332188"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""MouseMoved"",
+                    ""type"": ""Value"",
+                    ""id"": ""934122fb-54c1-46fb-941b-4c274551c6e7"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -171,7 +180,7 @@ public partial class @ControlScheme : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""SwivelCamera"",
+                    ""action"": ""MovedMouse"",
                     ""isComposite"": true,
                     ""isPartOfComposite"": false
                 },
@@ -182,7 +191,7 @@ public partial class @ControlScheme : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""SwivelCamera"",
+                    ""action"": ""MovedMouse"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -193,7 +202,7 @@ public partial class @ControlScheme : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""SwivelCamera"",
+                    ""action"": ""MovedMouse"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -204,7 +213,7 @@ public partial class @ControlScheme : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""SwivelCamera"",
+                    ""action"": ""MovedMouse"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -215,9 +224,20 @@ public partial class @ControlScheme : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""SwivelCamera"",
+                    ""action"": ""MovedMouse"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cfe162d4-a486-4c13-9bc6-d184c60be3ec"",
+                    ""path"": ""<Mouse>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MouseMoved"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -246,7 +266,8 @@ public partial class @ControlScheme : IInputActionCollection2, IDisposable
         m_CameraMovement_Movement = m_CameraMovement.FindAction("Movement", throwIfNotFound: true);
         m_CameraMovement_Zoom = m_CameraMovement.FindAction("Zoom", throwIfNotFound: true);
         m_CameraMovement_SwivelMode = m_CameraMovement.FindAction("SwivelMode", throwIfNotFound: true);
-        m_CameraMovement_SwivelCamera = m_CameraMovement.FindAction("SwivelCamera", throwIfNotFound: true);
+        m_CameraMovement_MovedMouse = m_CameraMovement.FindAction("MovedMouse", throwIfNotFound: true);
+        m_CameraMovement_MouseMoved = m_CameraMovement.FindAction("MouseMoved", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -309,7 +330,8 @@ public partial class @ControlScheme : IInputActionCollection2, IDisposable
     private readonly InputAction m_CameraMovement_Movement;
     private readonly InputAction m_CameraMovement_Zoom;
     private readonly InputAction m_CameraMovement_SwivelMode;
-    private readonly InputAction m_CameraMovement_SwivelCamera;
+    private readonly InputAction m_CameraMovement_MovedMouse;
+    private readonly InputAction m_CameraMovement_MouseMoved;
     public struct CameraMovementActions
     {
         private @ControlScheme m_Wrapper;
@@ -317,7 +339,8 @@ public partial class @ControlScheme : IInputActionCollection2, IDisposable
         public InputAction @Movement => m_Wrapper.m_CameraMovement_Movement;
         public InputAction @Zoom => m_Wrapper.m_CameraMovement_Zoom;
         public InputAction @SwivelMode => m_Wrapper.m_CameraMovement_SwivelMode;
-        public InputAction @SwivelCamera => m_Wrapper.m_CameraMovement_SwivelCamera;
+        public InputAction @MovedMouse => m_Wrapper.m_CameraMovement_MovedMouse;
+        public InputAction @MouseMoved => m_Wrapper.m_CameraMovement_MouseMoved;
         public InputActionMap Get() { return m_Wrapper.m_CameraMovement; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -336,9 +359,12 @@ public partial class @ControlScheme : IInputActionCollection2, IDisposable
                 @SwivelMode.started -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnSwivelMode;
                 @SwivelMode.performed -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnSwivelMode;
                 @SwivelMode.canceled -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnSwivelMode;
-                @SwivelCamera.started -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnSwivelCamera;
-                @SwivelCamera.performed -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnSwivelCamera;
-                @SwivelCamera.canceled -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnSwivelCamera;
+                @MovedMouse.started -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnMovedMouse;
+                @MovedMouse.performed -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnMovedMouse;
+                @MovedMouse.canceled -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnMovedMouse;
+                @MouseMoved.started -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnMouseMoved;
+                @MouseMoved.performed -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnMouseMoved;
+                @MouseMoved.canceled -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnMouseMoved;
             }
             m_Wrapper.m_CameraMovementActionsCallbackInterface = instance;
             if (instance != null)
@@ -352,9 +378,12 @@ public partial class @ControlScheme : IInputActionCollection2, IDisposable
                 @SwivelMode.started += instance.OnSwivelMode;
                 @SwivelMode.performed += instance.OnSwivelMode;
                 @SwivelMode.canceled += instance.OnSwivelMode;
-                @SwivelCamera.started += instance.OnSwivelCamera;
-                @SwivelCamera.performed += instance.OnSwivelCamera;
-                @SwivelCamera.canceled += instance.OnSwivelCamera;
+                @MovedMouse.started += instance.OnMovedMouse;
+                @MovedMouse.performed += instance.OnMovedMouse;
+                @MovedMouse.canceled += instance.OnMovedMouse;
+                @MouseMoved.started += instance.OnMouseMoved;
+                @MouseMoved.performed += instance.OnMouseMoved;
+                @MouseMoved.canceled += instance.OnMouseMoved;
             }
         }
     }
@@ -373,6 +402,7 @@ public partial class @ControlScheme : IInputActionCollection2, IDisposable
         void OnMovement(InputAction.CallbackContext context);
         void OnZoom(InputAction.CallbackContext context);
         void OnSwivelMode(InputAction.CallbackContext context);
-        void OnSwivelCamera(InputAction.CallbackContext context);
+        void OnMovedMouse(InputAction.CallbackContext context);
+        void OnMouseMoved(InputAction.CallbackContext context);
     }
 }

@@ -33,9 +33,18 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "SwivelCamera",
+                    "name": "MovedMouse",
                     "type": "Value",
                     "id": "7c5ebca6-53e5-4543-8575-4629ea332188",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "MouseMoved",
+                    "type": "Value",
+                    "id": "934122fb-54c1-46fb-941b-4c274551c6e7",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -149,7 +158,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "SwivelCamera",
+                    "action": "MovedMouse",
                     "isComposite": true,
                     "isPartOfComposite": false
                 },
@@ -160,7 +169,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "SwivelCamera",
+                    "action": "MovedMouse",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -171,7 +180,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "SwivelCamera",
+                    "action": "MovedMouse",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -182,7 +191,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "SwivelCamera",
+                    "action": "MovedMouse",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -193,9 +202,20 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "SwivelCamera",
+                    "action": "MovedMouse",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "cfe162d4-a486-4c13-9bc6-d184c60be3ec",
+                    "path": "<Mouse>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MouseMoved",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }

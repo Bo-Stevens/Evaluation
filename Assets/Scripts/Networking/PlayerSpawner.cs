@@ -14,6 +14,7 @@ public class PlayerSpawner : SimulationBehaviour, IPlayerJoined
             NetworkObject playerInstance = Runner.Spawn(playerPrefab, Vector3.zero, Quaternion.identity, player);
             GameObject cameraInstance = Instantiate(playerCameraPrefab);
             cameraInstance.GetComponent<CameraController>().Follow = playerInstance.transform;
+            cameraInstance.GetComponent<CameraController>().Player = playerInstance.GetComponent<PlayerMovementComponent>();
         }
     }
 }

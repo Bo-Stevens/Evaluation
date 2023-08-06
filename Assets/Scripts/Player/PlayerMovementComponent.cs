@@ -6,11 +6,15 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterController))]
 public class PlayerMovementComponent : SimulationBehaviour
 {
+    [HideInInspector] public ControlScheme ActiveControlScheme;
     CharacterController characterContoller;
     [SerializeField] float movementSpeed;
 
+
     private void Awake()
     {
+        ActiveControlScheme = new ControlScheme();
+        ActiveControlScheme.CameraMovement.Enable();
         characterContoller = GetComponent<CharacterController>();
     }
     public override void FixedUpdateNetwork()
