@@ -71,6 +71,15 @@ public partial class @ControlScheme : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""LeftMouseClicked"",
+                    ""type"": ""Button"",
+                    ""id"": ""734f3ad1-d684-4f48-9110-5ad448090e75"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -238,6 +247,17 @@ public partial class @ControlScheme : IInputActionCollection2, IDisposable
                     ""action"": ""MouseMoved"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""80d533b0-e4bf-44ac-a6ac-01b0fd6b22f1"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""LeftMouseClicked"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -268,6 +288,7 @@ public partial class @ControlScheme : IInputActionCollection2, IDisposable
         m_CameraMovement_SwivelMode = m_CameraMovement.FindAction("SwivelMode", throwIfNotFound: true);
         m_CameraMovement_MovedMouse = m_CameraMovement.FindAction("MovedMouse", throwIfNotFound: true);
         m_CameraMovement_MouseMoved = m_CameraMovement.FindAction("MouseMoved", throwIfNotFound: true);
+        m_CameraMovement_LeftMouseClicked = m_CameraMovement.FindAction("LeftMouseClicked", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -332,6 +353,7 @@ public partial class @ControlScheme : IInputActionCollection2, IDisposable
     private readonly InputAction m_CameraMovement_SwivelMode;
     private readonly InputAction m_CameraMovement_MovedMouse;
     private readonly InputAction m_CameraMovement_MouseMoved;
+    private readonly InputAction m_CameraMovement_LeftMouseClicked;
     public struct CameraMovementActions
     {
         private @ControlScheme m_Wrapper;
@@ -341,6 +363,7 @@ public partial class @ControlScheme : IInputActionCollection2, IDisposable
         public InputAction @SwivelMode => m_Wrapper.m_CameraMovement_SwivelMode;
         public InputAction @MovedMouse => m_Wrapper.m_CameraMovement_MovedMouse;
         public InputAction @MouseMoved => m_Wrapper.m_CameraMovement_MouseMoved;
+        public InputAction @LeftMouseClicked => m_Wrapper.m_CameraMovement_LeftMouseClicked;
         public InputActionMap Get() { return m_Wrapper.m_CameraMovement; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -365,6 +388,9 @@ public partial class @ControlScheme : IInputActionCollection2, IDisposable
                 @MouseMoved.started -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnMouseMoved;
                 @MouseMoved.performed -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnMouseMoved;
                 @MouseMoved.canceled -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnMouseMoved;
+                @LeftMouseClicked.started -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnLeftMouseClicked;
+                @LeftMouseClicked.performed -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnLeftMouseClicked;
+                @LeftMouseClicked.canceled -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnLeftMouseClicked;
             }
             m_Wrapper.m_CameraMovementActionsCallbackInterface = instance;
             if (instance != null)
@@ -384,6 +410,9 @@ public partial class @ControlScheme : IInputActionCollection2, IDisposable
                 @MouseMoved.started += instance.OnMouseMoved;
                 @MouseMoved.performed += instance.OnMouseMoved;
                 @MouseMoved.canceled += instance.OnMouseMoved;
+                @LeftMouseClicked.started += instance.OnLeftMouseClicked;
+                @LeftMouseClicked.performed += instance.OnLeftMouseClicked;
+                @LeftMouseClicked.canceled += instance.OnLeftMouseClicked;
             }
         }
     }
@@ -404,5 +433,6 @@ public partial class @ControlScheme : IInputActionCollection2, IDisposable
         void OnSwivelMode(InputAction.CallbackContext context);
         void OnMovedMouse(InputAction.CallbackContext context);
         void OnMouseMoved(InputAction.CallbackContext context);
+        void OnLeftMouseClicked(InputAction.CallbackContext context);
     }
 }

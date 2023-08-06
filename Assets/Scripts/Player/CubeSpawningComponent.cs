@@ -6,7 +6,10 @@ using UnityEngine;
 public class CubeSpawningComponent : MonoBehaviour
 {
     [SerializeField] GameObject pointerPrefab;
+    [SerializeField] TeleporterController teleporterCubePrefab;
     Camera playerCam;
+    Vector3 spawnPosition;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -14,8 +17,8 @@ public class CubeSpawningComponent : MonoBehaviour
         playerCam = GetComponent<Camera>();
         //Should come up with something more intuitive
         GetComponent<CameraController>().Player.ActiveControlScheme.CameraMovement.MouseMoved.performed += OnMouseMoved;
+        GetComponent<CameraController>().Player.ActiveControlScheme.CameraMovement.LeftMouseClicked.performed += OnMouseLeftClick;
     }
-
 
     void OnMouseMoved(InputAction.CallbackContext context)
     {
@@ -23,7 +26,14 @@ public class CubeSpawningComponent : MonoBehaviour
         Ray rayToCast = playerCam.ScreenPointToRay(new Vector3(screenPosition.x, screenPosition.y));
         RaycastHit hit;
         Physics.Raycast(rayToCast, out hit);
-        pointerPrefab.transform.position = hit.point;
+        spawnPosition = hit.point;
+        pointerPrefab.transform.position = spawnPosition;
+    }
+
+    void OnMouseLeftClick(InputAction.CallbackContext context)
+    {
+        TeleporterController teleporter = Instantiate(teleporterCubePrefab.gameObject, spawnPosition, Quaternion.identity).GetComponent<TeleporterController>();
+        teleporter.transform.position += new Vector3(0, teleporter.TeleporterMesh.bounds.size.y / 2f, 0);
     }
 
     // Update is called once per frame
