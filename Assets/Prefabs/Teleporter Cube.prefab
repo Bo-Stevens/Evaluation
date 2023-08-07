@@ -120,3 +120,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TeleporterMesh: {fileID: 0}
   OnSpawnDespawn: {fileID: 11400000, guid: bc168ffe05703be4f835ea23f920e6a6, type: 2}
+  timeBeforeDespawning: 10

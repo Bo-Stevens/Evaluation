@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine;
 
-public class CubeSpawningComponent : MonoBehaviour
+public class TeleporterSpawningComponent : MonoBehaviour
 {
     [SerializeField] GameObject pointerPrefab;
     [SerializeField] TeleporterController teleporterCubePrefab;
@@ -24,7 +24,7 @@ public class CubeSpawningComponent : MonoBehaviour
         playerCam = GetComponent<Camera>();
         //Should come up with something more intuitive
         GetComponent<CameraController>().Player.ActiveControlScheme.CameraMovement.MouseMoved.performed += OnMouseMoved;
-        GetComponent<CameraController>().Player.ActiveControlScheme.CameraMovement.LeftMouseClicked.performed += OnMouseLeftClick;
+        //GetComponent<CameraController>().Player.ActiveControlScheme.CameraMovement.LeftMouseClicked.performed += OnMouseLeftClick;
     }
 
     void OnMouseMoved(InputAction.CallbackContext context)

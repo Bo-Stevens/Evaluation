@@ -21,11 +21,6 @@ public class CameraController : MonoBehaviour
     Vector3 centerPosition;
     bool swiveling;
 
-    private void Awake()
-    {
-
-
-    }
     private void Start()
     {
         Player.ActiveControlScheme.CameraMovement.Movement.performed += CameraMoved;
@@ -34,6 +29,7 @@ public class CameraController : MonoBehaviour
         Player.ActiveControlScheme.CameraMovement.SwivelMode.performed += SetSwivelState;
         Player.ActiveControlScheme.CameraMovement.SwivelMode.canceled += SetSwivelState;
         Player.ActiveControlScheme.CameraMovement.MovedMouse.performed += SwivelCamera;
+        Player.ActiveControlScheme.CameraMovement.LeftMouseClicked.performed += OnLeftClick;
     }
 
     private void Update()
@@ -86,4 +82,15 @@ public class CameraController : MonoBehaviour
                 transform.RotateAround(hit.point, Vector3.right, rotationSpeed * Time.deltaTime * direction.y * -1);
                 transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, 0);*/
     }
+
+    void OnLeftClick(InputAction.CallbackContext context)
+    {
+        Vector2 screenPosition = Input.mousePosition;
+
+        Ray rayToCast = GetComponent<Camera>().ScreenPointToRay(new Vector3(screenPosition.x, screenPosition.y));
+        RaycastHit hit;
+        Physics.Raycast(rayToCast, out hit);
+        Player.MoveTo(hit.point);
+    }
+
 }
