@@ -4,7 +4,7 @@ using Fusion;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
-public class PlayerMovementComponent : SimulationBehaviour
+public class PlayerController : SimulationBehaviour
 {
     [HideInInspector] public ControlScheme ActiveControlScheme;
     [HideInInspector] public PlayerUIController PlayerUI;

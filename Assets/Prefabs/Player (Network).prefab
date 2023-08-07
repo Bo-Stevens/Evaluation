@@ -151,6 +151,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84cf7382e56f0a5479d2c35d2ff9b4aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PlayerUI: {fileID: 0}
+  CameraController: {fileID: 0}
+  CubeSpawner: {fileID: 0}
   movementSpeed: 10
 --- !u!1 &6664988496564339529
 GameObject:

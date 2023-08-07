@@ -8,7 +8,7 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     [HideInInspector] public Transform Follow;
-    [HideInInspector] public PlayerMovementComponent Player;
+    [HideInInspector] public PlayerController Player;
     [SerializeField] float cameraMovementSpeed;
     [SerializeField] float cameraDirectionDragTime;
     [SerializeField] float zoomMovementSpeed;

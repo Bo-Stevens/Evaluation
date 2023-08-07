@@ -121,6 +121,7 @@ MonoBehaviour:
     type: 3}
   teleporterCubePrefab: {fileID: -8307952950079337834, guid: 59190485049188c4294664eab3695b1a,
     type: 3}
+  maxCubeAmount: 2
 --- !u!114 &1570540228403778947
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -118,3 +118,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9840ebcabb5f228418748cb85eaed8df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  TeleporterMesh: {fileID: 0}
+  OnSpawnDespawn: {fileID: 11400000, guid: bc168ffe05703be4f835ea23f920e6a6, type: 2}
