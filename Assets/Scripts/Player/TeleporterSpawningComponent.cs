@@ -12,9 +12,10 @@ public class TeleporterSpawningComponent : MonoBehaviour
 
     float pointerYOffset;
     Vector3 spawnPosition;
+    Vector3 spawnNormal;
     Camera playerCam;
     int cubeCount;
-
+    bool isValid;
     // Start is called before the first frame update
     void Start()
     {
@@ -33,8 +34,16 @@ public class TeleporterSpawningComponent : MonoBehaviour
         RaycastHit hit;
         Physics.Raycast(rayToCast, out hit);
         spawnPosition = hit.point;
+        spawnNormal = hit.normal;
+        isValid = Vector3.Dot(hit.normal, Vector3.up) > 0.5f;
+        pointerPrefab.SetValidStatus(isValid);
         pointerPrefab.transform.position = spawnPosition + new Vector3(0, pointerYOffset, 0);
-        pointerPrefab.SetValidStatus(Vector3.Dot(hit.normal, Vector3.up) > 0.5f);
+
+        //Only change the rotation if you're going to create a valid teleporter
+        if (!isValid) { pointerPrefab.transform.rotation = Quaternion.identity; return; }
+        Vector3 newForwards = Vector3.Cross(pointerPrefab.transform.right, spawnNormal);
+        Quaternion rotation = Quaternion.LookRotation(newForwards);
+        pointerPrefab.transform.rotation = rotation;
     }
 
     void OnMouseLeftClick(InputAction.CallbackContext context)
@@ -45,6 +54,9 @@ public class TeleporterSpawningComponent : MonoBehaviour
     public void SpawnTeleporter(Vector3 position)
     {
         TeleporterController teleporter = Instantiate(teleporterCubePrefab.gameObject, position, Quaternion.identity).GetComponent<TeleporterController>();
+        Vector3 newForwards = Vector3.Cross(teleporter.transform.right, spawnNormal);
+        Quaternion rotation = Quaternion.LookRotation(newForwards);
+        teleporter.transform.rotation = rotation;
         teleporter.transform.position += new Vector3(0, teleporter.TeleporterMesh.bounds.size.y / 2f, 0);
         cubeCount += 1;
         PlayerResources.Instance.UIController.SetPlacementCountString(cubeCount + "");

@@ -14,6 +14,9 @@ public class TeleporterController : MonoBehaviour
     void Awake()
     {
         TeleporterMesh = GetComponent<MeshFilter>().mesh;
+    }
+    private void Start()
+    {
         OnSpawnDespawn.RunSpawnBehavior(transform);
         StartCoroutine(AwaitDeath());
     }
