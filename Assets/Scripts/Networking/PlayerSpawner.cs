@@ -18,11 +18,11 @@ public class PlayerSpawner : SimulationBehaviour, IPlayerJoined
             PlayerController controller = playerInstance.GetComponent<PlayerController>();
 
 
-            PlayerResources resources = new PlayerResources();
-            resources.Player = controller;
-            resources.CamController = cameraInstance;
-            resources.UIController = ui;
-            resources.TeleporterSpawner = cameraInstance.GetComponent<TeleporterSpawningComponent>();
+            
+            PlayerManager.Player = controller;
+            PlayerManager.CamController = cameraInstance;
+            PlayerManager.UIController = ui;
+            PlayerManager.TeleporterSpawner = cameraInstance.GetComponent<TeleporterSpawningComponent>();
 
 
             playerInstance.transform.position += new Vector3(0, controller.VisualComponent.GetComponent<MeshFilter>().mesh.bounds.extents.y, 0);

@@ -11,14 +11,17 @@ public class RotateScaleSpawnDespawn : SpawnDespawnBehavior
     [SerializeField] Ease scaleEase;
     [SerializeField] Ease rotationEase;
     Vector3 fullSize;
+
+    bool initialized;
     public override void RunSpawnBehavior(Transform transform)
     {
-        fullSize = transform.localScale;
+        if(!initialized) fullSize = transform.localScale;
         transform.DORotate(transform.rotation.eulerAngles + new Vector3(0, 360 * numberOfRotations, 0), time, RotateMode.FastBeyond360).SetEase(rotationEase);
         transform.localScale = Vector3.zero;
         transform.DOScaleX(fullSize.x, time).SetEase(scaleEase);
         transform.DOScaleY(fullSize.y, time).SetEase(scaleEase);
         transform.DOScaleZ(fullSize.z, time).SetEase(scaleEase);
+        initialized = true;
     }
 
     public override void RunDespawnBehavior(Transform transform, TweenCallback OnComplete)
@@ -26,5 +29,4 @@ public class RotateScaleSpawnDespawn : SpawnDespawnBehavior
         transform.DORotate(transform.rotation.eulerAngles - new Vector3(0, 360 * numberOfRotations, 0), time, RotateMode.FastBeyond360).SetEase(rotationEase).OnComplete(OnComplete);
         transform.DOScale(0, time).SetEase(scaleEase);
     }
-
 }

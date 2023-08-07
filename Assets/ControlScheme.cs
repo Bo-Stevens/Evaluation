@@ -253,6 +253,24 @@ public partial class @ControlScheme : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Escape"",
+                    ""type"": ""Button"",
+                    ""id"": ""c9f9f8f8-322d-4ee8-8ea0-f2092efcf6f2"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Rotate"",
+                    ""type"": ""Value"",
+                    ""id"": ""79308749-4d77-4f15-82b6-25c94e341e2c"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -266,6 +284,50 @@ public partial class @ControlScheme : IInputActionCollection2, IDisposable
                     ""action"": ""LeftMouseClicked"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""205dace7-4c6b-403a-8fd6-769c013bfb24"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Escape"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""1D Axis"",
+                    ""id"": ""c4039470-feb4-4b12-ac57-94368f9e1a6f"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""648d46bc-5056-4a27-9337-e1fde3f5f870"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""85e1e1fb-f4bc-4788-848a-5511390fc68a"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         },
@@ -281,6 +343,15 @@ public partial class @ControlScheme : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Escape"",
+                    ""type"": ""Button"",
+                    ""id"": ""1e077d44-1920-4586-8b12-800e8ab88e6e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -292,6 +363,17 @@ public partial class @ControlScheme : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""LeftMouseClicked"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7ca974f2-6b73-4357-bb10-080e1a5a205a"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Escape"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -327,9 +409,12 @@ public partial class @ControlScheme : IInputActionCollection2, IDisposable
         // TeleporterPlacement
         m_TeleporterPlacement = asset.FindActionMap("TeleporterPlacement", throwIfNotFound: true);
         m_TeleporterPlacement_LeftMouseClicked = m_TeleporterPlacement.FindAction("LeftMouseClicked", throwIfNotFound: true);
+        m_TeleporterPlacement_Escape = m_TeleporterPlacement.FindAction("Escape", throwIfNotFound: true);
+        m_TeleporterPlacement_Rotate = m_TeleporterPlacement.FindAction("Rotate", throwIfNotFound: true);
         // UnitOrdering
         m_UnitOrdering = asset.FindActionMap("UnitOrdering", throwIfNotFound: true);
         m_UnitOrdering_LeftMouseClicked = m_UnitOrdering.FindAction("LeftMouseClicked", throwIfNotFound: true);
+        m_UnitOrdering_Escape = m_UnitOrdering.FindAction("Escape", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -455,11 +540,15 @@ public partial class @ControlScheme : IInputActionCollection2, IDisposable
     private readonly InputActionMap m_TeleporterPlacement;
     private ITeleporterPlacementActions m_TeleporterPlacementActionsCallbackInterface;
     private readonly InputAction m_TeleporterPlacement_LeftMouseClicked;
+    private readonly InputAction m_TeleporterPlacement_Escape;
+    private readonly InputAction m_TeleporterPlacement_Rotate;
     public struct TeleporterPlacementActions
     {
         private @ControlScheme m_Wrapper;
         public TeleporterPlacementActions(@ControlScheme wrapper) { m_Wrapper = wrapper; }
         public InputAction @LeftMouseClicked => m_Wrapper.m_TeleporterPlacement_LeftMouseClicked;
+        public InputAction @Escape => m_Wrapper.m_TeleporterPlacement_Escape;
+        public InputAction @Rotate => m_Wrapper.m_TeleporterPlacement_Rotate;
         public InputActionMap Get() { return m_Wrapper.m_TeleporterPlacement; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -472,6 +561,12 @@ public partial class @ControlScheme : IInputActionCollection2, IDisposable
                 @LeftMouseClicked.started -= m_Wrapper.m_TeleporterPlacementActionsCallbackInterface.OnLeftMouseClicked;
                 @LeftMouseClicked.performed -= m_Wrapper.m_TeleporterPlacementActionsCallbackInterface.OnLeftMouseClicked;
                 @LeftMouseClicked.canceled -= m_Wrapper.m_TeleporterPlacementActionsCallbackInterface.OnLeftMouseClicked;
+                @Escape.started -= m_Wrapper.m_TeleporterPlacementActionsCallbackInterface.OnEscape;
+                @Escape.performed -= m_Wrapper.m_TeleporterPlacementActionsCallbackInterface.OnEscape;
+                @Escape.canceled -= m_Wrapper.m_TeleporterPlacementActionsCallbackInterface.OnEscape;
+                @Rotate.started -= m_Wrapper.m_TeleporterPlacementActionsCallbackInterface.OnRotate;
+                @Rotate.performed -= m_Wrapper.m_TeleporterPlacementActionsCallbackInterface.OnRotate;
+                @Rotate.canceled -= m_Wrapper.m_TeleporterPlacementActionsCallbackInterface.OnRotate;
             }
             m_Wrapper.m_TeleporterPlacementActionsCallbackInterface = instance;
             if (instance != null)
@@ -479,6 +574,12 @@ public partial class @ControlScheme : IInputActionCollection2, IDisposable
                 @LeftMouseClicked.started += instance.OnLeftMouseClicked;
                 @LeftMouseClicked.performed += instance.OnLeftMouseClicked;
                 @LeftMouseClicked.canceled += instance.OnLeftMouseClicked;
+                @Escape.started += instance.OnEscape;
+                @Escape.performed += instance.OnEscape;
+                @Escape.canceled += instance.OnEscape;
+                @Rotate.started += instance.OnRotate;
+                @Rotate.performed += instance.OnRotate;
+                @Rotate.canceled += instance.OnRotate;
             }
         }
     }
@@ -488,11 +589,13 @@ public partial class @ControlScheme : IInputActionCollection2, IDisposable
     private readonly InputActionMap m_UnitOrdering;
     private IUnitOrderingActions m_UnitOrderingActionsCallbackInterface;
     private readonly InputAction m_UnitOrdering_LeftMouseClicked;
+    private readonly InputAction m_UnitOrdering_Escape;
     public struct UnitOrderingActions
     {
         private @ControlScheme m_Wrapper;
         public UnitOrderingActions(@ControlScheme wrapper) { m_Wrapper = wrapper; }
         public InputAction @LeftMouseClicked => m_Wrapper.m_UnitOrdering_LeftMouseClicked;
+        public InputAction @Escape => m_Wrapper.m_UnitOrdering_Escape;
         public InputActionMap Get() { return m_Wrapper.m_UnitOrdering; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -505,6 +608,9 @@ public partial class @ControlScheme : IInputActionCollection2, IDisposable
                 @LeftMouseClicked.started -= m_Wrapper.m_UnitOrderingActionsCallbackInterface.OnLeftMouseClicked;
                 @LeftMouseClicked.performed -= m_Wrapper.m_UnitOrderingActionsCallbackInterface.OnLeftMouseClicked;
                 @LeftMouseClicked.canceled -= m_Wrapper.m_UnitOrderingActionsCallbackInterface.OnLeftMouseClicked;
+                @Escape.started -= m_Wrapper.m_UnitOrderingActionsCallbackInterface.OnEscape;
+                @Escape.performed -= m_Wrapper.m_UnitOrderingActionsCallbackInterface.OnEscape;
+                @Escape.canceled -= m_Wrapper.m_UnitOrderingActionsCallbackInterface.OnEscape;
             }
             m_Wrapper.m_UnitOrderingActionsCallbackInterface = instance;
             if (instance != null)
@@ -512,6 +618,9 @@ public partial class @ControlScheme : IInputActionCollection2, IDisposable
                 @LeftMouseClicked.started += instance.OnLeftMouseClicked;
                 @LeftMouseClicked.performed += instance.OnLeftMouseClicked;
                 @LeftMouseClicked.canceled += instance.OnLeftMouseClicked;
+                @Escape.started += instance.OnEscape;
+                @Escape.performed += instance.OnEscape;
+                @Escape.canceled += instance.OnEscape;
             }
         }
     }
@@ -536,9 +645,12 @@ public partial class @ControlScheme : IInputActionCollection2, IDisposable
     public interface ITeleporterPlacementActions
     {
         void OnLeftMouseClicked(InputAction.CallbackContext context);
+        void OnEscape(InputAction.CallbackContext context);
+        void OnRotate(InputAction.CallbackContext context);
     }
     public interface IUnitOrderingActions
     {
         void OnLeftMouseClicked(InputAction.CallbackContext context);
+        void OnEscape(InputAction.CallbackContext context);
     }
 }

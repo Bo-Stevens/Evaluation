@@ -9,12 +9,12 @@ public class PlayerUIController : MonoBehaviour
 
     private void Start()
     {
-        textField.text = "0/" + PlayerResources.Instance.TeleporterSpawner.MaxCubeAmount;
+        textField.text = "0/" + PlayerManager.TeleporterSpawner.MaxCubeAmount;
     }
 
     public void SetPlacementCountString(string newValue)
     {
-        textField.text = newValue + "/" + PlayerResources.Instance.TeleporterSpawner.MaxCubeAmount; 
+        textField.text = newValue + "/" + PlayerManager.TeleporterSpawner.MaxCubeAmount; 
     }
     public string GetPlacementCountString()
     {
@@ -23,6 +23,6 @@ public class PlayerUIController : MonoBehaviour
 
     public void TeleporterButtonPressed()
     {
-        PlayerResources.Instance.Player.FlipMouseControlSceme();
+        PlayerManager.Player.FlipMouseControlSceme();
     }
 }

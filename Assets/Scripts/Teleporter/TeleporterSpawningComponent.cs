@@ -4,27 +4,40 @@ using UnityEngine.InputSystem;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+class TeleporterPair
+{
+    public GameObject teleporterParent;
+    public TeleporterController One;
+    public TeleporterController Two;
+    public GameObject PointerOne;
+    public GameObject PointerTwo;
+}
+
 public class TeleporterSpawningComponent : MonoBehaviour
 {
     public int MaxCubeAmount;
     [SerializeField] TeleporterPointerController pointerPrefab;
     [SerializeField] TeleporterController teleporterCubePrefab;
-
-    float pointerYOffset;
+    
+    TeleporterPair pairToBuild;
     Vector3 spawnPosition;
     Vector3 spawnNormal;
     Camera playerCam;
     int cubeCount;
     bool isValid;
+    float pointerYOffset;
+
     // Start is called before the first frame update
     void Start()
     {
         pointerPrefab = Instantiate(pointerPrefab.gameObject).GetComponent<TeleporterPointerController>();
         playerCam = GetComponent<Camera>();
         //Should come up with something more intuitive
-        PlayerResources.Instance.Player.ActiveControlScheme.CameraMovement.MouseMoved.performed += OnMouseMoved;
-        PlayerResources.Instance.Player.ActiveControlScheme.TeleporterPlacement.LeftMouseClicked.performed += OnMouseLeftClick;
+        PlayerManager.Player.ActiveControlScheme.CameraMovement.MouseMoved.performed += OnMouseMoved;
+        PlayerManager.Player.ActiveControlScheme.TeleporterPlacement.LeftMouseClicked.performed += OnMouseLeftClick;
+        PlayerManager.Player.ActiveControlScheme.TeleporterPlacement.Escape.performed += OnEscape;
         pointerYOffset = pointerPrefab.GetComponent<MeshFilter>().mesh.bounds.extents.y;
+        Deactivate();
     }
 
     void OnMouseMoved(InputAction.CallbackContext context)
@@ -46,24 +59,64 @@ public class TeleporterSpawningComponent : MonoBehaviour
         pointerPrefab.transform.rotation = rotation;
     }
 
+    void OnEscape(InputAction.CallbackContext context)
+    {
+        Deactivate();
+    }
+
     void OnMouseLeftClick(InputAction.CallbackContext context)
     {
         if (cubeCount >= MaxCubeAmount || EventSystem.current.IsPointerOverGameObject() || !pointerPrefab.IsValidLocation()) return;
         SpawnTeleporter(spawnPosition);
     }
+
     public void SpawnTeleporter(Vector3 position)
     {
-        TeleporterController teleporter = Instantiate(teleporterCubePrefab.gameObject, position, Quaternion.identity).GetComponent<TeleporterController>();
+        if(pairToBuild == null)
+        {
+            pairToBuild = new TeleporterPair();
+            pairToBuild.teleporterParent = new GameObject("Teleporter");
+            pairToBuild.One = InstantiateTeleporter(position, pairToBuild.teleporterParent.transform);
+            pairToBuild.PointerOne = Instantiate(pointerPrefab.gameObject, position, Quaternion.identity);
+            pairToBuild.PointerOne.transform.position += new Vector3(0, pointerYOffset, 0);
+        }
+        else
+        {
+            pairToBuild.Two = InstantiateTeleporter(position, pairToBuild.teleporterParent.transform);
+            pairToBuild.One.Initialize(pairToBuild.Two);
+            pairToBuild.Two.Initialize(pairToBuild.One);
+            Destroy(pairToBuild.PointerOne);
+            pairToBuild = null;
+        }
+    }
+
+    TeleporterController InstantiateTeleporter(Vector3 position, Transform parent)
+    {
+        TeleporterController teleporter = Instantiate(teleporterCubePrefab.gameObject, position, Quaternion.identity, parent).GetComponent<TeleporterController>();
+        teleporter.gameObject.SetActive(false);
         Vector3 newForwards = Vector3.Cross(teleporter.transform.right, spawnNormal);
         Quaternion rotation = Quaternion.LookRotation(newForwards);
         teleporter.transform.rotation = rotation;
         teleporter.transform.position += new Vector3(0, teleporter.TeleporterMesh.bounds.size.y / 2f, 0);
         cubeCount += 1;
-        PlayerResources.Instance.UIController.SetPlacementCountString(cubeCount + "");
+        PlayerManager.UIController.SetPlacementCountString(cubeCount + "");
+        return teleporter;
     }
+
     public void TeleporterDeleted()
     {
         cubeCount -= 1;
-        PlayerResources.Instance.UIController.SetPlacementCountString(cubeCount + "");
+        PlayerManager.UIController.SetPlacementCountString(cubeCount + "");
+    }
+
+    public void Activate()
+    {
+        pointerPrefab.gameObject.SetActive(true);
+        PlayerManager.Player.ActiveControlScheme.TeleporterPlacement.Enable();
+    }
+    public void Deactivate()
+    {
+        pointerPrefab.gameObject.SetActive(false);
+        PlayerManager.Player.ActiveControlScheme.TeleporterPlacement.Disable();
     }
 }

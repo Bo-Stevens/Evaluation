@@ -4,16 +4,15 @@ using Fusion;
 using UnityEngine.AI;
 using UnityEngine;
 
-[RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(NavMeshAgent))]
 public class PlayerController : SimulationBehaviour
 {
     [HideInInspector] public ControlScheme ActiveControlScheme;
+    [HideInInspector] public NavMeshAgent NavAgent;
     public GameObject VisualComponent;
 
     [SerializeField] RotateScaleSpawnDespawn spawnDespawnBehavior;
     CharacterController characterContoller;
-    NavMeshAgent agent;
 
     private void Awake()
     {
@@ -21,30 +20,39 @@ public class PlayerController : SimulationBehaviour
         ActiveControlScheme.CameraMovement.Enable();
         ActiveControlScheme.UnitOrdering.Enable();
         characterContoller = GetComponent<CharacterController>();
-        agent = GetComponent<NavMeshAgent>();
+        NavAgent = GetComponent<NavMeshAgent>();
         spawnDespawnBehavior.RunSpawnBehavior(transform);
     }
     private void Start()
     {
-        PlayerResources.Instance.CamController.Follow = transform;
+        PlayerManager.CamController.Follow = transform;
     }
 
     public void MoveTo(Vector3 pos)
     {
-        agent.SetDestination(pos);
+        NavAgent.SetDestination(pos);
     }
+
     public void FlipMouseControlSceme()
     {
         if (ActiveControlScheme.UnitOrdering.enabled)
         {
             ActiveControlScheme.UnitOrdering.Disable();
-            ActiveControlScheme.TeleporterPlacement.Enable();
+            PlayerManager.TeleporterSpawner.Activate();
         }
         else
         {
             ActiveControlScheme.UnitOrdering.Enable();
-            ActiveControlScheme.TeleporterPlacement.Disable();
+            PlayerManager.TeleporterSpawner.Deactivate();
         }
     }
 
+    public void Despawn(DG.Tweening.TweenCallback onComplete)
+    {
+        spawnDespawnBehavior.RunDespawnBehavior(transform, onComplete);
+    }
+    public void Spawn()
+    {
+        spawnDespawnBehavior.RunSpawnBehavior(transform);
+    }
 }

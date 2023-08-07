@@ -2,20 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerResources
+public static class PlayerManager
 {
-    public static PlayerResources Instance;
     
-    public PlayerController Player;
-    public PlayerUIController UIController;
-    public TeleporterSpawningComponent TeleporterSpawner;
-    public CameraController CamController;
-
-    public PlayerResources()
-    {
-        if (Instance != null) return;
-
-        Instance = this;
-    }
+    public static PlayerController Player;
+    public static PlayerUIController UIController;
+    public static TeleporterSpawningComponent TeleporterSpawner;
+    public static CameraController CamController;
 
 }
