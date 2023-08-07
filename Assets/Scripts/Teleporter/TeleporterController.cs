@@ -10,8 +10,7 @@ public class TeleporterController : MonoBehaviour
     [SerializeField] SpawnDespawnBehavior OnSpawnDespawn;
     [SerializeField] float timeBeforeDespawning;
     float timer;
-    Vector3 fullSize;
-    // Start is called before the first frame update
+
     void Awake()
     {
         TeleporterMesh = GetComponent<MeshFilter>().mesh;
@@ -28,11 +27,11 @@ public class TeleporterController : MonoBehaviour
         }
 
         OnSpawnDespawn.RunDespawnBehavior(transform, DeleteGameObject);
-
     }
 
     void DeleteGameObject()
     {
+        PlayerResources.Instance.TeleporterSpawner.TeleporterDeleted();
         Destroy(this);
     }
 

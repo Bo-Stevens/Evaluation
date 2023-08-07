@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class CameraController : MonoBehaviour
 {
     [HideInInspector] public Transform Follow;
-    [HideInInspector] public PlayerController Player;
     [SerializeField] float cameraMovementSpeed;
     [SerializeField] float cameraDirectionDragTime;
     [SerializeField] float zoomMovementSpeed;
@@ -23,13 +23,14 @@ public class CameraController : MonoBehaviour
 
     private void Start()
     {
-        Player.ActiveControlScheme.CameraMovement.Movement.performed += CameraMoved;
-        Player.ActiveControlScheme.CameraMovement.Movement.canceled += CameraMoved;
-        Player.ActiveControlScheme.CameraMovement.Zoom.performed += Zoom;
-        Player.ActiveControlScheme.CameraMovement.SwivelMode.performed += SetSwivelState;
-        Player.ActiveControlScheme.CameraMovement.SwivelMode.canceled += SetSwivelState;
-        Player.ActiveControlScheme.CameraMovement.MovedMouse.performed += SwivelCamera;
-        Player.ActiveControlScheme.CameraMovement.LeftMouseClicked.performed += OnLeftClick;
+        ControlScheme activeControlScheme = PlayerResources.Instance.Player.ActiveControlScheme;
+        activeControlScheme.CameraMovement.Movement.performed += CameraMoved;
+        activeControlScheme.CameraMovement.Movement.canceled += CameraMoved;
+        activeControlScheme.CameraMovement.Zoom.performed += Zoom;
+        activeControlScheme.CameraMovement.SwivelMode.performed += SetSwivelState;
+        activeControlScheme.CameraMovement.SwivelMode.canceled += SetSwivelState;
+        activeControlScheme.CameraMovement.MovedMouse.performed += SwivelCamera;
+        activeControlScheme.UnitOrdering.LeftMouseClicked.performed += OnLeftClick;
     }
 
     private void Update()
@@ -85,12 +86,12 @@ public class CameraController : MonoBehaviour
 
     void OnLeftClick(InputAction.CallbackContext context)
     {
+        if (EventSystem.current.IsPointerOverGameObject()) return;
         Vector2 screenPosition = Input.mousePosition;
-
         Ray rayToCast = GetComponent<Camera>().ScreenPointToRay(new Vector3(screenPosition.x, screenPosition.y));
         RaycastHit hit;
         Physics.Raycast(rayToCast, out hit);
-        Player.MoveTo(hit.point);
+        PlayerResources.Instance.Player.MoveTo(hit.point);
     }
 
 }

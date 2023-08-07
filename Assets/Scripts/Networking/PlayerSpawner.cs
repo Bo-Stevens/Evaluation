@@ -16,12 +16,17 @@ public class PlayerSpawner : SimulationBehaviour, IPlayerJoined
             CameraController cameraInstance = Instantiate(playerCameraPrefab.gameObject).GetComponent<CameraController>();
             PlayerUIController ui = Instantiate(playerUI.gameObject).GetComponent<PlayerUIController>();
             PlayerController controller = playerInstance.GetComponent<PlayerController>();
-            playerInstance.transform.position += new Vector3(0, controller.VisualComponent.GetComponent<MeshFilter>().mesh.bounds.extents.y, 0);
 
-            playerInstance.GetBehaviour<PlayerController>().CameraController = cameraInstance;
+
+            PlayerResources resources = new PlayerResources();
+            resources.Player = controller;
+            resources.CamController = cameraInstance;
+            resources.UIController = ui;
+            resources.TeleporterSpawner = cameraInstance.GetComponent<TeleporterSpawningComponent>();
+
+
+            playerInstance.transform.position += new Vector3(0, controller.VisualComponent.GetComponent<MeshFilter>().mesh.bounds.extents.y, 0);
             cameraInstance.Follow = playerInstance.transform;
-            cameraInstance.Player = playerInstance.GetComponent<PlayerController>();
-            playerInstance.GetComponent<PlayerController>().PlayerUI = ui;
         }
     }
 }

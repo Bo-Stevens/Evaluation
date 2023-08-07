@@ -49,15 +49,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
-                },
-                {
-                    "name": "LeftMouseClicked",
-                    "type": "Button",
-                    "id": "734f3ad1-d684-4f48-9110-5ad448090e75",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -225,10 +216,55 @@
                     "action": "MouseMoved",
                     "isComposite": false,
                     "isPartOfComposite": false
-                },
+                }
+            ]
+        },
+        {
+            "name": "TeleporterPlacement",
+            "id": "b466b18b-ffe3-4a65-a134-5504f1bb65f5",
+            "actions": [
+                {
+                    "name": "LeftMouseClicked",
+                    "type": "Button",
+                    "id": "bc552769-a41d-464c-b2a4-b44b5dbb8870",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
                 {
                     "name": "",
-                    "id": "80d533b0-e4bf-44ac-a6ac-01b0fd6b22f1",
+                    "id": "090ab139-7a36-49d9-aeec-c488c3f58846",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "LeftMouseClicked",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "UnitOrdering",
+            "id": "d7efebbf-fe2a-4371-97b6-6f685db6d4b3",
+            "actions": [
+                {
+                    "name": "LeftMouseClicked",
+                    "type": "Button",
+                    "id": "4570302d-a20b-4fc1-a652-08cbec0c856f",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "07734162-07b2-4476-8952-6eacc22016b3",
                     "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",

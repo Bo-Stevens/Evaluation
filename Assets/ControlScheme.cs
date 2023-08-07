@@ -71,15 +71,6 @@ public partial class @ControlScheme : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
-                },
-                {
-                    ""name"": ""LeftMouseClicked"",
-                    ""type"": ""Button"",
-                    ""id"": ""734f3ad1-d684-4f48-9110-5ad448090e75"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -247,10 +238,55 @@ public partial class @ControlScheme : IInputActionCollection2, IDisposable
                     ""action"": ""MouseMoved"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
-                },
+                }
+            ]
+        },
+        {
+            ""name"": ""TeleporterPlacement"",
+            ""id"": ""b466b18b-ffe3-4a65-a134-5504f1bb65f5"",
+            ""actions"": [
+                {
+                    ""name"": ""LeftMouseClicked"",
+                    ""type"": ""Button"",
+                    ""id"": ""bc552769-a41d-464c-b2a4-b44b5dbb8870"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
                 {
                     ""name"": """",
-                    ""id"": ""80d533b0-e4bf-44ac-a6ac-01b0fd6b22f1"",
+                    ""id"": ""090ab139-7a36-49d9-aeec-c488c3f58846"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""LeftMouseClicked"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""UnitOrdering"",
+            ""id"": ""d7efebbf-fe2a-4371-97b6-6f685db6d4b3"",
+            ""actions"": [
+                {
+                    ""name"": ""LeftMouseClicked"",
+                    ""type"": ""Button"",
+                    ""id"": ""4570302d-a20b-4fc1-a652-08cbec0c856f"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""07734162-07b2-4476-8952-6eacc22016b3"",
                     ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -288,7 +324,12 @@ public partial class @ControlScheme : IInputActionCollection2, IDisposable
         m_CameraMovement_SwivelMode = m_CameraMovement.FindAction("SwivelMode", throwIfNotFound: true);
         m_CameraMovement_MovedMouse = m_CameraMovement.FindAction("MovedMouse", throwIfNotFound: true);
         m_CameraMovement_MouseMoved = m_CameraMovement.FindAction("MouseMoved", throwIfNotFound: true);
-        m_CameraMovement_LeftMouseClicked = m_CameraMovement.FindAction("LeftMouseClicked", throwIfNotFound: true);
+        // TeleporterPlacement
+        m_TeleporterPlacement = asset.FindActionMap("TeleporterPlacement", throwIfNotFound: true);
+        m_TeleporterPlacement_LeftMouseClicked = m_TeleporterPlacement.FindAction("LeftMouseClicked", throwIfNotFound: true);
+        // UnitOrdering
+        m_UnitOrdering = asset.FindActionMap("UnitOrdering", throwIfNotFound: true);
+        m_UnitOrdering_LeftMouseClicked = m_UnitOrdering.FindAction("LeftMouseClicked", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -353,7 +394,6 @@ public partial class @ControlScheme : IInputActionCollection2, IDisposable
     private readonly InputAction m_CameraMovement_SwivelMode;
     private readonly InputAction m_CameraMovement_MovedMouse;
     private readonly InputAction m_CameraMovement_MouseMoved;
-    private readonly InputAction m_CameraMovement_LeftMouseClicked;
     public struct CameraMovementActions
     {
         private @ControlScheme m_Wrapper;
@@ -363,7 +403,6 @@ public partial class @ControlScheme : IInputActionCollection2, IDisposable
         public InputAction @SwivelMode => m_Wrapper.m_CameraMovement_SwivelMode;
         public InputAction @MovedMouse => m_Wrapper.m_CameraMovement_MovedMouse;
         public InputAction @MouseMoved => m_Wrapper.m_CameraMovement_MouseMoved;
-        public InputAction @LeftMouseClicked => m_Wrapper.m_CameraMovement_LeftMouseClicked;
         public InputActionMap Get() { return m_Wrapper.m_CameraMovement; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -388,9 +427,6 @@ public partial class @ControlScheme : IInputActionCollection2, IDisposable
                 @MouseMoved.started -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnMouseMoved;
                 @MouseMoved.performed -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnMouseMoved;
                 @MouseMoved.canceled -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnMouseMoved;
-                @LeftMouseClicked.started -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnLeftMouseClicked;
-                @LeftMouseClicked.performed -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnLeftMouseClicked;
-                @LeftMouseClicked.canceled -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnLeftMouseClicked;
             }
             m_Wrapper.m_CameraMovementActionsCallbackInterface = instance;
             if (instance != null)
@@ -410,13 +446,76 @@ public partial class @ControlScheme : IInputActionCollection2, IDisposable
                 @MouseMoved.started += instance.OnMouseMoved;
                 @MouseMoved.performed += instance.OnMouseMoved;
                 @MouseMoved.canceled += instance.OnMouseMoved;
+            }
+        }
+    }
+    public CameraMovementActions @CameraMovement => new CameraMovementActions(this);
+
+    // TeleporterPlacement
+    private readonly InputActionMap m_TeleporterPlacement;
+    private ITeleporterPlacementActions m_TeleporterPlacementActionsCallbackInterface;
+    private readonly InputAction m_TeleporterPlacement_LeftMouseClicked;
+    public struct TeleporterPlacementActions
+    {
+        private @ControlScheme m_Wrapper;
+        public TeleporterPlacementActions(@ControlScheme wrapper) { m_Wrapper = wrapper; }
+        public InputAction @LeftMouseClicked => m_Wrapper.m_TeleporterPlacement_LeftMouseClicked;
+        public InputActionMap Get() { return m_Wrapper.m_TeleporterPlacement; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(TeleporterPlacementActions set) { return set.Get(); }
+        public void SetCallbacks(ITeleporterPlacementActions instance)
+        {
+            if (m_Wrapper.m_TeleporterPlacementActionsCallbackInterface != null)
+            {
+                @LeftMouseClicked.started -= m_Wrapper.m_TeleporterPlacementActionsCallbackInterface.OnLeftMouseClicked;
+                @LeftMouseClicked.performed -= m_Wrapper.m_TeleporterPlacementActionsCallbackInterface.OnLeftMouseClicked;
+                @LeftMouseClicked.canceled -= m_Wrapper.m_TeleporterPlacementActionsCallbackInterface.OnLeftMouseClicked;
+            }
+            m_Wrapper.m_TeleporterPlacementActionsCallbackInterface = instance;
+            if (instance != null)
+            {
                 @LeftMouseClicked.started += instance.OnLeftMouseClicked;
                 @LeftMouseClicked.performed += instance.OnLeftMouseClicked;
                 @LeftMouseClicked.canceled += instance.OnLeftMouseClicked;
             }
         }
     }
-    public CameraMovementActions @CameraMovement => new CameraMovementActions(this);
+    public TeleporterPlacementActions @TeleporterPlacement => new TeleporterPlacementActions(this);
+
+    // UnitOrdering
+    private readonly InputActionMap m_UnitOrdering;
+    private IUnitOrderingActions m_UnitOrderingActionsCallbackInterface;
+    private readonly InputAction m_UnitOrdering_LeftMouseClicked;
+    public struct UnitOrderingActions
+    {
+        private @ControlScheme m_Wrapper;
+        public UnitOrderingActions(@ControlScheme wrapper) { m_Wrapper = wrapper; }
+        public InputAction @LeftMouseClicked => m_Wrapper.m_UnitOrdering_LeftMouseClicked;
+        public InputActionMap Get() { return m_Wrapper.m_UnitOrdering; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(UnitOrderingActions set) { return set.Get(); }
+        public void SetCallbacks(IUnitOrderingActions instance)
+        {
+            if (m_Wrapper.m_UnitOrderingActionsCallbackInterface != null)
+            {
+                @LeftMouseClicked.started -= m_Wrapper.m_UnitOrderingActionsCallbackInterface.OnLeftMouseClicked;
+                @LeftMouseClicked.performed -= m_Wrapper.m_UnitOrderingActionsCallbackInterface.OnLeftMouseClicked;
+                @LeftMouseClicked.canceled -= m_Wrapper.m_UnitOrderingActionsCallbackInterface.OnLeftMouseClicked;
+            }
+            m_Wrapper.m_UnitOrderingActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @LeftMouseClicked.started += instance.OnLeftMouseClicked;
+                @LeftMouseClicked.performed += instance.OnLeftMouseClicked;
+                @LeftMouseClicked.canceled += instance.OnLeftMouseClicked;
+            }
+        }
+    }
+    public UnitOrderingActions @UnitOrdering => new UnitOrderingActions(this);
     private int m_PCSchemeIndex = -1;
     public InputControlScheme PCScheme
     {
@@ -433,6 +532,13 @@ public partial class @ControlScheme : IInputActionCollection2, IDisposable
         void OnSwivelMode(InputAction.CallbackContext context);
         void OnMovedMouse(InputAction.CallbackContext context);
         void OnMouseMoved(InputAction.CallbackContext context);
+    }
+    public interface ITeleporterPlacementActions
+    {
+        void OnLeftMouseClicked(InputAction.CallbackContext context);
+    }
+    public interface IUnitOrderingActions
+    {
         void OnLeftMouseClicked(InputAction.CallbackContext context);
     }
 }

@@ -2,29 +2,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class TeleporterSpawningComponent : MonoBehaviour
 {
-    [SerializeField] GameObject pointerPrefab;
+    public int MaxCubeAmount;
+    [SerializeField] TeleporterPointerController pointerPrefab;
     [SerializeField] TeleporterController teleporterCubePrefab;
-    [SerializeField] int maxCubeAmount;
 
-    public delegate void CubeSpawned(int cubeCount);
-    public event CubeSpawned OnCubeSpawned;
-
+    float pointerYOffset;
     Vector3 spawnPosition;
     Camera playerCam;
     int cubeCount;
 
-
     // Start is called before the first frame update
     void Start()
     {
-        pointerPrefab = Instantiate(pointerPrefab);
+        pointerPrefab = Instantiate(pointerPrefab.gameObject).GetComponent<TeleporterPointerController>();
         playerCam = GetComponent<Camera>();
         //Should come up with something more intuitive
-        GetComponent<CameraController>().Player.ActiveControlScheme.CameraMovement.MouseMoved.performed += OnMouseMoved;
-        //GetComponent<CameraController>().Player.ActiveControlScheme.CameraMovement.LeftMouseClicked.performed += OnMouseLeftClick;
+        PlayerResources.Instance.Player.ActiveControlScheme.CameraMovement.MouseMoved.performed += OnMouseMoved;
+        PlayerResources.Instance.Player.ActiveControlScheme.TeleporterPlacement.LeftMouseClicked.performed += OnMouseLeftClick;
+        pointerYOffset = pointerPrefab.GetComponent<MeshFilter>().mesh.bounds.extents.y;
     }
 
     void OnMouseMoved(InputAction.CallbackContext context)
@@ -34,21 +33,25 @@ public class TeleporterSpawningComponent : MonoBehaviour
         RaycastHit hit;
         Physics.Raycast(rayToCast, out hit);
         spawnPosition = hit.point;
-        pointerPrefab.transform.position = spawnPosition;
+        pointerPrefab.transform.position = spawnPosition + new Vector3(0, pointerYOffset, 0);
+        pointerPrefab.SetValidStatus(Vector3.Dot(hit.normal, Vector3.up) > 0.5f);
     }
 
     void OnMouseLeftClick(InputAction.CallbackContext context)
     {
-        if (cubeCount >= maxCubeAmount) return; 
-        TeleporterController teleporter = Instantiate(teleporterCubePrefab.gameObject, spawnPosition, Quaternion.identity).GetComponent<TeleporterController>();
+        if (cubeCount >= MaxCubeAmount || EventSystem.current.IsPointerOverGameObject() || !pointerPrefab.IsValidLocation()) return;
+        SpawnTeleporter(spawnPosition);
+    }
+    public void SpawnTeleporter(Vector3 position)
+    {
+        TeleporterController teleporter = Instantiate(teleporterCubePrefab.gameObject, position, Quaternion.identity).GetComponent<TeleporterController>();
         teleporter.transform.position += new Vector3(0, teleporter.TeleporterMesh.bounds.size.y / 2f, 0);
         cubeCount += 1;
-        if(OnCubeSpawned != null) OnCubeSpawned.Invoke(cubeCount);
+        PlayerResources.Instance.UIController.SetPlacementCountString(cubeCount + "");
     }
-
-    // Update is called once per frame
-    void Update()
+    public void TeleporterDeleted()
     {
-        
+        cubeCount -= 1;
+        PlayerResources.Instance.UIController.SetPlacementCountString(cubeCount + "");
     }
 }

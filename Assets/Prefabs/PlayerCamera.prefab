@@ -117,11 +117,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53c575b900d0a304780892458efe31a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pointerPrefab: {fileID: 691717586880274879, guid: c1d128d6d9db67f4eb985f1c87391b30,
+  MaxCubeAmount: 10
+  pointerPrefab: {fileID: -6485716559638656083, guid: c9c59e60a67473d4ead4d0c8f401986a,
     type: 3}
   teleporterCubePrefab: {fileID: -8307952950079337834, guid: 59190485049188c4294664eab3695b1a,
     type: 3}
-  maxCubeAmount: 2
 --- !u!114 &1570540228403778947
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -135,7 +135,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Follow: {fileID: 0}
-  Player: {fileID: 0}
   cameraMovementSpeed: 10
   cameraDirectionDragTime: 0.5
   zoomMovementSpeed: 1
