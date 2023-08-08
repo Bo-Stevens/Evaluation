@@ -12,14 +12,13 @@ public class PlayerController : SimulationBehaviour
     public GameObject VisualComponent;
 
     [SerializeField] RotateScaleSpawnDespawn spawnDespawnBehavior;
-    CharacterController characterContoller;
-
-    private void Awake()
+    
+    public void Initialize()
     {
+        Debug.Log("PlayerInit");
         ActiveControlScheme = new ControlScheme();
         ActiveControlScheme.CameraMovement.Enable();
         ActiveControlScheme.UnitOrdering.Enable();
-        characterContoller = GetComponent<CharacterController>();
         NavAgent = GetComponent<NavMeshAgent>();
         spawnDespawnBehavior.RunSpawnBehavior(transform);
     }

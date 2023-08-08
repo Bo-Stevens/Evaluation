@@ -6,6 +6,7 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+[RequireComponent(typeof(AudioSource))]
 public class CameraController : MonoBehaviour
 {
     [HideInInspector] public Transform Follow;
@@ -21,10 +22,14 @@ public class CameraController : MonoBehaviour
     Vector3 centerPosition;
     bool swiveling;
 
+    private void Awake()
+    {
+        PlayerManager.PlayerEarsAudioSource = GetComponent<AudioSource>();    
+    }
     private void Start()
     {
         ControlScheme activeControlScheme = PlayerManager.Player.ActiveControlScheme;
-        centerPosition = new Vector3(0, transform.position.y, 0);
+        centerPosition = new Vector3(transform.position.x / 2f, transform.position.y, transform.position.z / 2f);
         activeControlScheme.CameraMovement.Movement.performed += CameraMoved;
         activeControlScheme.CameraMovement.Movement.canceled += CameraMoved;
         activeControlScheme.CameraMovement.Zoom.performed += Zoom;
@@ -36,16 +41,11 @@ public class CameraController : MonoBehaviour
 
     private void Update()
     {
-        movementPostion = centerPosition + Quaternion.Euler(0,transform.rotation.eulerAngles.y,0) * new Vector3(movementDirection.x * Time.deltaTime, 0, movementDirection.y * Time.deltaTime) * cameraMovementSpeed;
-        transform.position = movementPostion;
-        if (movementPostion.x < validMovementSpace.extents.x && movementPostion.x > -validMovementSpace.extents.x)
-        {
-            centerPosition = new Vector3(movementPostion.x, centerPosition.y, centerPosition.z);
-        }
-        if(movementPostion.z < validMovementSpace.extents.z && movementPostion.z > -validMovementSpace.extents.z)
-        {
-            centerPosition = new Vector3(centerPosition.x, centerPosition.y, movementPostion.z);
-        }
+        //Updating the direction in which the camera will respond to player input
+
+        movementPostion = Quaternion.Euler(0,transform.rotation.eulerAngles.y,0) * new Vector3(movementDirection.x * Time.deltaTime, 0, movementDirection.y * Time.deltaTime) * cameraMovementSpeed;
+        transform.position += movementPostion;
+        centerPosition += movementPostion;
     }
 
     void CameraMoved(InputAction.CallbackContext context)
@@ -71,8 +71,9 @@ public class CameraController : MonoBehaviour
 
         Vector2 direction = -context.ReadValue<Vector2>();
         rotation += direction / 100f;
-        Vector3 circle = (new Vector3(Mathf.Cos(rotation.x * rotationSpeed), 0, Mathf.Sin(rotation.x * rotationSpeed)) * cameraRotationRadius) + centerPosition;
-        transform.position = circle + new Vector3(0, transform.position.y, 0);
+        float PiHalf = Mathf.PI / 2f;
+        Vector3 circle = (new Vector3(Mathf.Cos(rotation.x * rotationSpeed + PiHalf), 0, Mathf.Sin(rotation.x * rotationSpeed - PiHalf)) * cameraRotationRadius ) + centerPosition;
+        transform.position = circle;
         transform.LookAt(new Vector3(centerPosition.x, transform.position.y, centerPosition.z));
         transform.rotation = Quaternion.Euler(new Vector3(45, transform.eulerAngles.y, transform.eulerAngles.z));
     }

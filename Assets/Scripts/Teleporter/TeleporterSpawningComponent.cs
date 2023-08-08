@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine;
+using Fusion;
 using UnityEngine.EventSystems;
 
 class TeleporterPair
@@ -75,29 +76,34 @@ public class TeleporterSpawningComponent : MonoBehaviour
         if(pairToBuild == null)
         {
             pairToBuild = new TeleporterPair();
-            pairToBuild.teleporterParent = new GameObject("Teleporter");
-            pairToBuild.One = InstantiateTeleporter(position, pairToBuild.teleporterParent.transform);
+            pairToBuild.One = InstantiateTeleporter(position);
             pairToBuild.PointerOne = Instantiate(pointerPrefab.gameObject, position, Quaternion.identity);
             pairToBuild.PointerOne.transform.position += new Vector3(0, pointerYOffset, 0);
         }
         else
         {
-            pairToBuild.Two = InstantiateTeleporter(position, pairToBuild.teleporterParent.transform);
-            pairToBuild.One.Initialize(pairToBuild.Two);
-            pairToBuild.Two.Initialize(pairToBuild.One);
+            pairToBuild.Two = InstantiateTeleporter(position);
+            pairToBuild.One.Initialize();
+            pairToBuild.Two.Initialize();
+            pairToBuild.One.Partner = pairToBuild.Two;
+            pairToBuild.Two.Partner = pairToBuild.One;
+            pairToBuild.PointerTwo = Instantiate(pointerPrefab.gameObject, position, Quaternion.identity);
+            pairToBuild.PointerTwo.transform.position += new Vector3(0, pointerYOffset, 0);
             Destroy(pairToBuild.PointerOne);
+            Destroy(pairToBuild.PointerTwo);
             pairToBuild = null;
         }
     }
 
-    TeleporterController InstantiateTeleporter(Vector3 position, Transform parent)
+    TeleporterController InstantiateTeleporter(Vector3 position)
     {
-        TeleporterController teleporter = Instantiate(teleporterCubePrefab.gameObject, position, Quaternion.identity, parent).GetComponent<TeleporterController>();
+        TeleporterController teleporter = PlayerManager.Runner.Spawn(teleporterCubePrefab.gameObject).GetComponent<TeleporterController>();
         teleporter.gameObject.SetActive(false);
+        teleporter.transform.position = position;
         Vector3 newForwards = Vector3.Cross(teleporter.transform.right, spawnNormal);
         Quaternion rotation = Quaternion.LookRotation(newForwards);
         teleporter.transform.rotation = rotation;
-        teleporter.transform.position += new Vector3(0, teleporter.TeleporterMesh.bounds.size.y / 2f, 0);
+        teleporter.transform.position += new Vector3(0, teleporter.TeleporterMesh.mesh.bounds.size.y / 2f, 0);
         cubeCount += 1;
         PlayerManager.UIController.SetPlacementCountString(cubeCount + "");
         return teleporter;
@@ -116,6 +122,12 @@ public class TeleporterSpawningComponent : MonoBehaviour
     }
     public void Deactivate()
     {
+        if(pairToBuild != null)
+        {
+            if (pairToBuild.One != null) { Destroy(pairToBuild.One); Destroy(pairToBuild.PointerOne); PlayerManager.TeleporterSpawner.TeleporterDeleted(); }
+            if (pairToBuild.Two != null) { Destroy(pairToBuild.Two); Destroy(pairToBuild.PointerTwo); PlayerManager.TeleporterSpawner.TeleporterDeleted(); }
+            pairToBuild = null;
+        }
         pointerPrefab.gameObject.SetActive(false);
         PlayerManager.Player.ActiveControlScheme.TeleporterPlacement.Disable();
     }

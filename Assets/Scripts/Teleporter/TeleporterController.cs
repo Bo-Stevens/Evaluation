@@ -1,34 +1,46 @@
 using System.Collections;
 using System.Collections.Generic;
+using Fusion;
 using DG.Tweening;
 using UnityEngine;
 
-[RequireComponent(typeof(MeshFilter))]
-public class TeleporterController : MonoBehaviour
+[RequireComponent(typeof(AudioSource))]
+public class TeleporterController : NetworkBehaviour, ISpawned
 {
-    [HideInInspector] public Mesh TeleporterMesh;
     [HideInInspector] public TeleporterController Partner;
+    public MeshFilter TeleporterMesh;
     public Transform SpawnPoint;
 
+    [Networked(OnChanged = nameof(OnInitialized))] bool initialized { get; set;}
+    [Networked(OnChanged = nameof(OnAwake))] bool awake { get; set; }
     [SerializeField] SpawnDespawnBehavior OnSpawnDespawn;
     [SerializeField] float timeBeforeDespawning;
+    [SerializeField] TeleporterSoundAsset soundAsset;
+    AudioSource audioSource;
+    PlayerController teleportingObject;
     float timer;
 
-    PlayerController teleportingObject;
-
-    void Awake()
+    public override void Spawned()
     {
-        TeleporterMesh = GetComponent<MeshFilter>().mesh;
+        awake = true;
     }
 
-    public void Initialize(TeleporterController partner)
+    public void Initialize()
     {
-        Partner = partner;
+        initialized = true;
+    }
+    void InitializeNetworked()
+    {
         gameObject.SetActive(true);
         OnSpawnDespawn.RunSpawnBehavior(transform);
         StartCoroutine(AwaitDeath());
     }
-
+    void AwakeNetworked()
+    {
+        audioSource = GetComponent<AudioSource>();
+        if (initialized) return;
+        gameObject.SetActive(false);
+    }
     IEnumerator AwaitDeath()
     {
         while(timer < timeBeforeDespawning)
@@ -39,34 +51,39 @@ public class TeleporterController : MonoBehaviour
 
         OnSpawnDespawn.RunDespawnBehavior(transform, DeleteGameObject);
     }
-
     void DeleteGameObject()
     {
-        PlayerManager.TeleporterSpawner.TeleporterDeleted();
-        //Scary code. Replace or treat with care
-        if (transform.parent != null) Destroy(transform.parent.gameObject);
+        if(PlayerManager.Runner == Runner) PlayerManager.TeleporterSpawner.TeleporterDeleted();
+        if (gameObject == null) return;
         Destroy(gameObject);
     }
+    void TeleportObject()
+    {
+        teleportingObject.Spawn();
+        audioSource.PlayOneShot(soundAsset.OnTeleport);
+        teleportingObject.transform.position = Partner.SpawnPoint.position;
+        teleportingObject.transform.forward = Partner.gameObject.transform.forward;
+        teleportingObject.NavAgent.ResetPath();
+    }
 
+    static void OnInitialized(Changed<TeleporterController> changed)
+    {
+        changed.Behaviour.InitializeNetworked();
+    }
+    static void OnAwake(Changed<TeleporterController> changed)
+    {
+        changed.Behaviour.AwakeNetworked();
+    }
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.yellow;
         Gizmos.DrawRay(transform.position, transform.forward * 2);
     }
-
     private void OnTriggerEnter(Collider other)
     {
-        PlayerController player = other.GetComponent<PlayerController>();
-        if (player == null) return;
-        player.Despawn(TeleportObject);
-
+        teleportingObject = other.GetComponent<PlayerController>();
+        if (teleportingObject == null) return;
+        teleportingObject.Despawn(TeleportObject);
     }
 
-    void TeleportObject()
-    {
-        teleportingObject.Spawn();
-        teleportingObject.transform.position = Partner.SpawnPoint.position;
-        teleportingObject.transform.forward = Partner.gameObject.transform.forward;
-        teleportingObject.NavAgent.destination = teleportingObject.transform.position;
-    }
 }
