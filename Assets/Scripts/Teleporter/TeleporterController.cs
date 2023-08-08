@@ -12,8 +12,8 @@ public class TeleporterController : NetworkBehaviour, ISpawned
     public MeshFilter TeleporterMesh;
     public Transform SpawnPoint;
 
-    [Networked(OnChanged = nameof(OnInitialized))] public bool active { get; set;}
-    [Networked(OnChanged = nameof(OnInitialized))] public bool destroy { get; set; }
+    [HideInInspector] [Networked(OnChanged = nameof(OnInitialized))] public bool active { get; set;}
+    [HideInInspector] [Networked(OnChanged = nameof(OnInitialized))] public bool destroy { get; set; }
     [SerializeField] SpawnDespawnBehavior OnSpawnDespawn;
     [SerializeField] float timeBeforeDespawning;
     [SerializeField] TeleporterSoundAsset soundAsset;

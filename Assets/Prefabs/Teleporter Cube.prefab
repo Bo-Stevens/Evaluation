@@ -104,11 +104,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
   Partner: {fileID: 0}
+  Owned: 0
   TeleporterMesh: {fileID: 980410123529173724}
   SpawnPoint: {fileID: 6421080417505781533}
   _active: 0
+  _destroy: 0
   OnSpawnDespawn: {fileID: 11400000, guid: bc168ffe05703be4f835ea23f920e6a6, type: 2}
-  timeBeforeDespawning: 3
+  timeBeforeDespawning: 10
   soundAsset: {fileID: 11400000, guid: 9afe70002d09bc442a484f81ddced36e, type: 2}
 --- !u!114 &-8287842482193543387
 MonoBehaviour:
