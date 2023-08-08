@@ -8,8 +8,8 @@ using UnityEngine.EventSystems;
 class TeleporterPair
 {
     public GameObject teleporterParent;
-    public TeleporterController One;
-    public TeleporterController Two;
+    public NetworkObject One;
+    public NetworkObject Two;
     public GameObject PointerOne;
     public GameObject PointerTwo;
 }
@@ -18,8 +18,8 @@ public class TeleporterSpawningComponent : MonoBehaviour
 {
     public int MaxCubeAmount;
     [SerializeField] TeleporterPointerController pointerPrefab;
+    [SerializeField] TeleporterDummy teleporterDummy;
     [SerializeField] TeleporterController teleporterCubePrefab;
-    
     TeleporterPair pairToBuild;
     Vector3 spawnPosition;
     Vector3 spawnNormal;
@@ -77,17 +77,19 @@ public class TeleporterSpawningComponent : MonoBehaviour
         {
             pairToBuild = new TeleporterPair();
             pairToBuild.One = InstantiateTeleporter(position);
-            pairToBuild.PointerOne = Instantiate(pointerPrefab.gameObject, position, Quaternion.identity);
+            pairToBuild.PointerOne = Instantiate(teleporterDummy.gameObject, position, Quaternion.identity);
             pairToBuild.PointerOne.transform.position += new Vector3(0, pointerYOffset, 0);
         }
         else
         {
             pairToBuild.Two = InstantiateTeleporter(position);
-            pairToBuild.One.Initialize();
-            pairToBuild.Two.Initialize();
-            pairToBuild.One.Partner = pairToBuild.Two;
-            pairToBuild.Two.Partner = pairToBuild.One;
-            pairToBuild.PointerTwo = Instantiate(pointerPrefab.gameObject, position, Quaternion.identity);
+            pairToBuild.One.GetComponent<TeleporterController>().active = true;
+            pairToBuild.Two.GetComponent<TeleporterController>().active = true;
+            pairToBuild.One.GetComponent<TeleporterController>().Owned = true;
+            pairToBuild.Two.GetComponent<TeleporterController>().Owned = true;
+            pairToBuild.One.GetComponent<TeleporterController>().Partner = pairToBuild.Two.GetComponent<TeleporterController>();
+            pairToBuild.Two.GetComponent<TeleporterController>().Partner = pairToBuild.One.GetComponent<TeleporterController>();
+            pairToBuild.PointerTwo = Instantiate(teleporterDummy.gameObject, position, Quaternion.identity);
             pairToBuild.PointerTwo.transform.position += new Vector3(0, pointerYOffset, 0);
             Destroy(pairToBuild.PointerOne);
             Destroy(pairToBuild.PointerTwo);
@@ -95,15 +97,14 @@ public class TeleporterSpawningComponent : MonoBehaviour
         }
     }
 
-    TeleporterController InstantiateTeleporter(Vector3 position)
+    NetworkObject InstantiateTeleporter(Vector3 position)
     {
-        TeleporterController teleporter = PlayerManager.Runner.Spawn(teleporterCubePrefab.gameObject).GetComponent<TeleporterController>();
-        teleporter.gameObject.SetActive(false);
+        NetworkObject teleporter = PlayerManager.Runner.Spawn(teleporterCubePrefab.gameObject);
         teleporter.transform.position = position;
         Vector3 newForwards = Vector3.Cross(teleporter.transform.right, spawnNormal);
         Quaternion rotation = Quaternion.LookRotation(newForwards);
         teleporter.transform.rotation = rotation;
-        teleporter.transform.position += new Vector3(0, teleporter.TeleporterMesh.mesh.bounds.size.y / 2f, 0);
+        teleporter.transform.position += new Vector3(0, teleporter.GetComponent<TeleporterController>().TeleporterMesh.mesh.bounds.size.y / 2f, 0);
         cubeCount += 1;
         PlayerManager.UIController.SetPlacementCountString(cubeCount + "");
         return teleporter;
@@ -124,11 +125,12 @@ public class TeleporterSpawningComponent : MonoBehaviour
     {
         if(pairToBuild != null)
         {
-            if (pairToBuild.One != null) { Destroy(pairToBuild.One); Destroy(pairToBuild.PointerOne); PlayerManager.TeleporterSpawner.TeleporterDeleted(); }
-            if (pairToBuild.Two != null) { Destroy(pairToBuild.Two); Destroy(pairToBuild.PointerTwo); PlayerManager.TeleporterSpawner.TeleporterDeleted(); }
+            if (pairToBuild.One != null) { PlayerManager.Runner.Despawn(pairToBuild.One); Destroy(pairToBuild.PointerOne); PlayerManager.TeleporterSpawner.TeleporterDeleted(); }
+            if (pairToBuild.Two != null) { PlayerManager.Runner.Despawn(pairToBuild.Two); Destroy(pairToBuild.PointerTwo); PlayerManager.TeleporterSpawner.TeleporterDeleted(); }
             pairToBuild = null;
         }
         pointerPrefab.gameObject.SetActive(false);
+        PlayerManager.Player.ActiveControlScheme.UnitOrdering.Enable();
         PlayerManager.Player.ActiveControlScheme.TeleporterPlacement.Disable();
     }
 }

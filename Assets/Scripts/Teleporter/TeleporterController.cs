@@ -8,11 +8,12 @@ using UnityEngine;
 public class TeleporterController : NetworkBehaviour, ISpawned
 {
     [HideInInspector] public TeleporterController Partner;
+    [HideInInspector] public bool Owned;
     public MeshFilter TeleporterMesh;
     public Transform SpawnPoint;
 
-    [Networked(OnChanged = nameof(OnInitialized))] bool initialized { get; set;}
-    [Networked(OnChanged = nameof(OnAwake))] bool awake { get; set; }
+    [Networked(OnChanged = nameof(OnInitialized))] public bool active { get; set;}
+    [Networked(OnChanged = nameof(OnInitialized))] public bool destroy { get; set; }
     [SerializeField] SpawnDespawnBehavior OnSpawnDespawn;
     [SerializeField] float timeBeforeDespawning;
     [SerializeField] TeleporterSoundAsset soundAsset;
@@ -20,27 +21,18 @@ public class TeleporterController : NetworkBehaviour, ISpawned
     PlayerController teleportingObject;
     float timer;
 
-    public override void Spawned()
+    private void Awake()
     {
-        awake = true;
-    }
-
-    public void Initialize()
-    {
-        initialized = true;
+        TeleporterMesh.gameObject.SetActive(false);
     }
     void InitializeNetworked()
     {
-        gameObject.SetActive(true);
+        audioSource = GetComponent<AudioSource>();
         OnSpawnDespawn.RunSpawnBehavior(transform);
+        TeleporterMesh.gameObject.SetActive(true);
         StartCoroutine(AwaitDeath());
     }
-    void AwakeNetworked()
-    {
-        audioSource = GetComponent<AudioSource>();
-        if (initialized) return;
-        gameObject.SetActive(false);
-    }
+
     IEnumerator AwaitDeath()
     {
         while(timer < timeBeforeDespawning)
@@ -53,9 +45,11 @@ public class TeleporterController : NetworkBehaviour, ISpawned
     }
     void DeleteGameObject()
     {
-        if(PlayerManager.Runner == Runner) PlayerManager.TeleporterSpawner.TeleporterDeleted();
-        if (gameObject == null) return;
-        Destroy(gameObject);
+        if (Owned)
+        {
+            PlayerManager.TeleporterSpawner.TeleporterDeleted();
+            Destroy(gameObject);
+        }
     }
     void TeleportObject()
     {
@@ -65,15 +59,11 @@ public class TeleporterController : NetworkBehaviour, ISpawned
         teleportingObject.transform.forward = Partner.gameObject.transform.forward;
         teleportingObject.NavAgent.ResetPath();
     }
-
     static void OnInitialized(Changed<TeleporterController> changed)
     {
         changed.Behaviour.InitializeNetworked();
     }
-    static void OnAwake(Changed<TeleporterController> changed)
-    {
-        changed.Behaviour.AwakeNetworked();
-    }
+
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.yellow;
@@ -81,9 +71,9 @@ public class TeleporterController : NetworkBehaviour, ISpawned
     }
     private void OnTriggerEnter(Collider other)
     {
+        if (!active) return;
         teleportingObject = other.GetComponent<PlayerController>();
         if (teleportingObject == null) return;
         teleportingObject.Despawn(TeleportObject);
     }
-
 }

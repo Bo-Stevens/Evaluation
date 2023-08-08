@@ -60,7 +60,6 @@ public class CameraController : MonoBehaviour
         cameraRotationRadius -= (zoomDirection.x + zoomDirection.z);
         transform.position += zoomDirection;
     }
-
     void SetSwivelState(InputAction.CallbackContext context)
     {
         swiveling = context.ReadValue<float>() > 0 ? true : false;

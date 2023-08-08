@@ -31,7 +31,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1570540228403778949}
   m_LocalRotation: {x: 0.39418256, y: 0, z: 0, w: 0.9190322}
-  m_LocalPosition: {x: 0, y: 5, z: -6}
+  m_LocalPosition: {x: 0, y: 8, z: -6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -88,6 +88,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MaxCubeAmount: 10
   pointerPrefab: {fileID: -6485716559638656083, guid: c9c59e60a67473d4ead4d0c8f401986a,
+    type: 3}
+  teleporterDummy: {fileID: -2137185190505384377, guid: 9d4dc135af6c27b4dba73e13bb2ec5ca,
     type: 3}
   teleporterCubePrefab: {fileID: -8307952950079337834, guid: 59190485049188c4294664eab3695b1a,
     type: 3}

@@ -8,14 +8,13 @@ public class TeleporterPointerController : MonoBehaviour
 {
     [SerializeField] Color validColor;
     [SerializeField] Color invalidColor;
-    [SerializeField] PointerSoundAsset soundAsset;
     Material instanceMaterial;
     bool isValidLocation;
     private void Awake()
     {
         instanceMaterial = GetComponent<MeshRenderer>().material;
-        PlayerManager.PlayerEarsAudioSource.PlayOneShot(soundAsset.OnSpawn);
     }
+
     public void SetValidStatus(bool valid)
     {
         isValidLocation = valid;

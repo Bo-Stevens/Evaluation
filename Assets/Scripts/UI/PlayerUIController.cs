@@ -6,6 +6,7 @@ using UnityEngine;
 public class PlayerUIController : MonoBehaviour
 {
     [SerializeField] Text textField;
+    public PlayerCountUI PlayerCount;
 
     private void Start()
     {

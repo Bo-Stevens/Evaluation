@@ -12,5 +12,6 @@ public static class PlayerManager
     public static CameraController CamController;
     public static NetworkRunner Runner;
     public static AudioSource PlayerEarsAudioSource;
+    public static PlayerRef PlayerReference;
 
 }
